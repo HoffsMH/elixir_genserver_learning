@@ -19,7 +19,12 @@ defmodule SimpleQueue do
 
   def handle_call(:queue, _from, state), do: {:reply, state, state}
 
-  def handle_call({:queue, value }, _from, state), do: {:reply, value, [value | state]}
+  @doc """
+  GenServer.handle_cast/2 callback
+  """
+  def handle_cast({:enqueue, value}, state) do
+    {:noreply, state ++ [value]}
+  end
 
   ### Client API / Helper functions
 
@@ -27,7 +32,7 @@ defmodule SimpleQueue do
     GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
-  def queue(value), do: GenServer.call(__MODULE__, { :queue, value })
   def queue, do: GenServer.call(__MODULE__, :queue)
+  def enqueue(value), do: GenServer.cast(__MODULE__, {:enqueue, value})
   def dequeue, do: GenServer.call(__MODULE__, :dequeue)
 end
