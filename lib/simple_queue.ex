@@ -23,6 +23,7 @@ defmodule SimpleQueue do
   GenServer.handle_cast/2 callback
   """
   def handle_cast({:enqueue, value}, state) do
+    :timer.sleep(20000)
     {:noreply, state ++ [value]}
   end
 
